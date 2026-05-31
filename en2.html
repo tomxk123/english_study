@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakUp — 영어 발음 트레이너</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #0e0f11; --surface: #16181c; --surface2: #1e2026; --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14); --text: #f0f0ee; --muted: #8a8d94; --accent: #c8f55a; --accent-dim: rgba(200,245,90,0.12); --accent-border: rgba(200,245,90,0.3); --red: #ff5f5f; --red-dim: rgba(255,95,95,0.12); --amber: #ffb347; --amber-dim: rgba(255,179,71,0.12); --green: #5adf8c; --green-dim: rgba(90,223,140,0.12); --radius: 14px; --radius-sm: 8px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+.wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1.25rem; }
+header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.5rem; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 1.75rem; }
+.logo span { color: var(--accent); }
+.api-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 1.5rem; display: flex; gap: 8px; align-items: center; }
+.api-bar input { flex: 1; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); padding: 5px; border-radius: 4px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 1.75rem; background: var(--surface); padding: 5px; border-radius: var(--radius); }
+.tab { flex: 1; padding: 9px; border-radius: 10px; border: none; background: transparent; cursor: pointer; color: var(--muted); }
+.tab.active { background: var(--surface2); color: var(--text); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 1rem; }
+.btn { padding: 9px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: transparent; cursor: pointer; color: var(--text); }
+.btn-accent { background: var(--accent); color: #000; }
+.sentence-en { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; }
+.result { padding: 10px; border-radius: 8px; margin-top: 10px; display: none; }
+.show { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="logo">Speak<span>Up</span></div></header>
+  <div class="api-bar">
+    <label>API Key:</label>
+    <input type="password" id="apiKey" placeholder="Gemini API 키를 입력하세요">
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('pronun')">발음 연습</button>
+    <button class="tab" onclick="switchTab('flash')">플래시카드</button>
+  </div>
+  <div id="tab-pronun">
+    <div class="card">
+      <div class="sentence-en" id="pr-en">Loading...</div>
+      <button class="btn" onclick="nextPronun()">다음 문장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sentences = [
+  { en: "I've been looking forward to this.", kr: "이번 주 내내 이걸 기대해왔어요." },
+  { en: "Could you please turn down the volume?", kr: "볼륨을 좀 줄여주시겠어요?" }
+];
+
+let prIdx = 0;
+
+function updatePronun() {
+  const el = document.getElementById('pr-en');
+  if (el) el.textContent = sentences[prIdx].en;
+}
+
+function nextPronun() {
+  prIdx = (prIdx + 1) % sentences.length;
+  updatePronun();
+}
+
+function switchTab(t) {
+  document.getElementById('tab-pronun').style.display = t === 'pronun' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.textContent.includes(t === 'pronun' ? '발음' : '플래시')));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updatePronun();
+});
+</script>
+</body>
+</html>
